@@ -1,0 +1,141 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["fieldReference"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Users {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  username  String
+  password  String
+  cpf       String
+  telephone String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Address {
+  id           String   @id @default(uuid())
+  street       String
+  neighborhood String
+  number       Int
+  city         String
+  state        String
+  cep          String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  Destination Destination?
+  Provider    Provider?
+}
+
+model Destination {
+  id        String   @id @default(uuid())
+  name      String
+  Address   Address  @relation(fields: [addressId], references: [id], onDelete: Cascade)
+  addressId String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  Entry     Entry[]
+  Exit      Exit[]
+}
+
+model Provider {
+  id        String   @id @default(uuid())
+  username  String
+  email     String   @unique
+  cpf       String
+  telephone String
+  Address   Address  @relation(fields: [addressId], references: [id], onDelete: Cascade)
+  addressId String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  Entry     Entry[]
+  Exit      Exit[]
+}
+
+model Category {
+  id           String         @id @default(uuid())
+  name         String         @unique
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  MaterialItem MaterialItem[]
+  MaterialType MaterialType[]
+}
+
+model MaterialType {
+  id           String         @id @default(uuid())
+  name         String
+  Category     Category       @relation(fields: [categoryId], references: [id])
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  categoryId   String
+  MaterialItem MaterialItem[]
+}
+
+model Entry {
+  id            String         @id @default(uuid())
+  fornecedor    Provider       @relation(fields: [providerId], references: [id])
+  destination   Destination    @relation(fields: [destinationId], references: [id])
+  observation   String
+  materialItems MaterialItem[]
+  fileUrl       String?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  providerId    String
+  destinationId String
+}
+
+model Exit {
+  id              String         @id @default(uuid())
+  provider        Provider       @relation(fields: [providerId], references: [id])
+  product         Product        @relation(fields: [productId], references: [id])
+  destination     Destination    @relation(fields: [destinationId], references: [id])
+  observation     String
+  materialItems   MaterialItem[]
+  exitType        String
+  productQuantity Int
+  code            String
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  providerId      String
+  productId       String
+  destinationId   String
+}
+
+model Product {
+  id        String   @id @default(uuid())
+  name      String   @unique()
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  Exit      Exit[]
+}
+
+model Paper {
+  id          String   @id @default(uuid())
+  name        String   @unique()
+  description String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model MaterialItem {
+  id             String       @id @default(uuid())
+  Category       Category     @relation(fields: [categoryId], references: [id])
+  MaterialType   MaterialType @relation(fields: [materialTypeId], references: [id])
+  quantity       Int
+  exitDate       DateTime
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  Entry          Entry?       @relation(fields: [entryId], references: [id])
+  entryId        String?
+  Exit           Exit?        @relation(fields: [exitId], references: [id])
+  exitId         String?
+  categoryId     String
+  materialTypeId String
+}
