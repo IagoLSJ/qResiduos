@@ -23,7 +23,6 @@ export class AuthService {
       singin.password,
       userByEmail.password,
     );
-    console.log(isCheckPassword);
     if (!isCheckPassword) {
       throw new AppError('E-mail/password incorreto');
     }
@@ -31,10 +30,11 @@ export class AuthService {
     const token = this.jwtService.sign(
       { userId: userByEmail.id },
       {
-        secret:process.env.SECRET,
+        secret: process.env.SECRET,
         expiresIn: process.env.EXPIRES_IN,
       },
     );
+
     return token;
   }
 }
