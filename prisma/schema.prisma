@@ -139,3 +139,22 @@ model MaterialItem {
   categoryId     String
   materialTypeId String
 }
+
+model vehicle {
+  id        String   @id @default(uuid())
+  name      String
+  placa     String   @unique()
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  Driver    Driver[]
+}
+
+model Driver {
+  id        String   @id @default(uuid())
+  name      String
+  cnh       String   @unique()
+  vehicle   vehicle? @relation(fields: [vehicleId], references: [id])
+  vehicleId String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

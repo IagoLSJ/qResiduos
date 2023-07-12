@@ -38,6 +38,4 @@ lerna-debug.log*
 .env
 
 # unfinished modules
-src/modules/entry
-src/modules/exit 
 src/modules/material-item

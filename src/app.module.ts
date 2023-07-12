@@ -10,6 +10,10 @@ import { ProviderModule } from './modules/provider/provider.module';
 import { UsersModule } from './modules/users/users.module';
 import { PrismaService } from './shared/prisma/prisma.service';
 import { ConfigModule } from '@nestjs/config';
+import { DriverModule } from './modules/driver/driver.module';
+import { VehicleModule } from './modules/vehicle/vehicle.module';
+import { ExitModule } from './modules/exit/exit.module';
+import { EntryModule } from './modules/entry/entry.module';
 
 @Module({
   imports: [
@@ -22,6 +26,10 @@ import { ConfigModule } from '@nestjs/config';
     PaperModule,
     MaterialTypeModule,
     ProductModule,
+    DriverModule,
+    VehicleModule,
+    ExitModule,
+    EntryModule,
     ConfigModule.forRoot({
       envFilePath: '.env',
     }),
